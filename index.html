@@ -190,8 +190,45 @@
             font-size: 22px;
         }
 
-        .dom-tasks section + section {
-            margin-top: 24px;
+        /* Нижние вкладки управляют только панелями заданий. */
+        .task-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .task-tab-btn {
+            padding: 10px 18px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            background-color: #f8fafc;
+            color: #475569;
+            font: inherit;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .task-tab-btn:hover {
+            background-color: #e2e8f0;
+        }
+
+        .task-tab-btn[aria-selected="true"] {
+            border-color: #2563eb;
+            background-color: #2563eb;
+            color: #ffffff;
+        }
+
+        .task-panel[hidden] {
+            display: none;
+        }
+
+        .task-tab-btn:focus-visible,
+        .task-panel:focus-visible {
+            outline: 3px solid #2563eb;
+            outline-offset: 3px;
         }
 
         .changeable-paragraph,
@@ -400,7 +437,12 @@
 
         <!-- Элементы для заданий по работе с DOM. -->
         <div class="home-card dom-tasks">
-            <section aria-labelledby="task-one-title">
+            <div class="task-tabs" role="tablist" aria-label="Задания по DOM">
+                <button id="task-tab-1" class="task-tab-btn" type="button" role="tab" aria-selected="true" aria-controls="task-panel-1">Задание 1</button>
+                <button id="task-tab-2" class="task-tab-btn" type="button" role="tab" aria-selected="false" aria-controls="task-panel-2" tabindex="-1">Задание 2</button>
+            </div>
+
+            <section id="task-panel-1" class="task-panel" role="tabpanel" aria-labelledby="task-tab-1" tabindex="0">
                 <h2 id="task-one-title">Задание 1. Работа с DOM</h2>
                 <p id="greeting" lang="kk">Исходный текст</p>
                 <div class="old-element">Этот элемент будет удалён JavaScript-кодом.</div>
@@ -418,7 +460,7 @@
                 </form>
             </section>
 
-            <section aria-labelledby="task-two-title">
+            <section id="task-panel-2" class="task-panel" role="tabpanel" aria-labelledby="task-tab-2" tabindex="0" hidden>
                 <h2 id="task-two-title">Задание 2. Управление классами</h2>
                 <div id="class-target" class="class-demo" aria-live="polite">Класс active не добавлен</div>
                 <button id="toggle-class" class="demo-button" type="button" aria-controls="class-target" aria-pressed="false">Переключить active</button>
@@ -591,6 +633,44 @@
                 document.getElementById(btnId).classList.add('active');
             }
         }
+
+        // Вкладки заданий независимы от главной навигации showTab.
+        const taskTabs = Array.from(document.querySelectorAll('.task-tab-btn'));
+
+        function selectTaskTab(selectedTab) {
+            taskTabs.forEach(function (tab) {
+                const isSelected = tab === selectedTab;
+                tab.setAttribute('aria-selected', String(isSelected));
+                tab.tabIndex = isSelected ? 0 : -1;
+                // Скрываем панель, сохраняя выбранные настройки и состояние active.
+                document.getElementById(tab.getAttribute('aria-controls')).hidden = !isSelected;
+            });
+        }
+
+        taskTabs.forEach(function (tab, index) {
+            tab.addEventListener('click', function () {
+                selectTaskTab(tab);
+            });
+
+            // Стрелки переключают вкладки; Home и End выбирают первую и последнюю.
+            tab.addEventListener('keydown', function (event) {
+                let nextIndex = index;
+                if (event.key === 'ArrowRight') {
+                    nextIndex = (index + 1) % taskTabs.length;
+                } else if (event.key === 'ArrowLeft') {
+                    nextIndex = (index - 1 + taskTabs.length) % taskTabs.length;
+                } else if (event.key === 'Home') {
+                    nextIndex = 0;
+                } else if (event.key === 'End') {
+                    nextIndex = taskTabs.length - 1;
+                } else {
+                    return;
+                }
+                event.preventDefault();
+                selectTaskTab(taskTabs[nextIndex]);
+                taskTabs[nextIndex].focus();
+            });
+        });
 
         // Скрипт расположен после HTML: все нужные элементы уже доступны.
         // Задание 1.1: находим элемент по ID и заменяем его текст.
