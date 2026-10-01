@@ -426,6 +426,11 @@
         body.dark-theme .class-demo.active { background: #1e3a8a; color: #dbeafe; }
         body.dark-theme .new-div { background: #14532d; color: #dcfce7; }
         /* Өзгертілетін абзацтың таңдалған түсі ашық фонда сақталады. */
+
+        .color-summary { margin-top: 20px; }
+        #used-colors-list { list-style: none; margin-top: 10px; padding: 0; }
+        #used-colors-list li { display: flex; align-items: center; gap: 10px; margin: 8px 0; }
+        .color-swatch { display: inline-block; width: 26px; height: 26px; flex: 0 0 26px; border: 1px solid #94a3b8; border-radius: 5px; }
     </style>
 </head>
 <body>
@@ -519,6 +524,10 @@
                 </div>
                 <p id="cell-count" role="status" aria-live="polite"></p>
                 <div id="table-container" class="table-scroll"></div>
+                <div class="color-summary" aria-live="polite">
+                    <h3>Қолданылған түстер</h3>
+                    <ul id="used-colors-list"></ul>
+                </div>
             </section>
             <section id="task-panel-4" class="task-panel" role="tabpanel" aria-labelledby="task-tab-4" tabindex="0" lang="kk" hidden>
                 <h2>4-тапсырма. Қараңғы тақырып</h2>
@@ -889,6 +898,7 @@
             ).length;
         }
         function updateCellCount() {
+            updateUsedColors();
             const color = document.getElementById('count-color').value;
             document.getElementById('cell-count').textContent =
                 color + ' түстегі ұяшықтар саны: ' + countCellsByColor(color);
@@ -927,6 +937,29 @@
             });
         });
         setDarkTheme(false);
+
+        // Барлық қолданылған түстер мен олардың ұяшық санын көрсету.
+        function updateUsedColors() {
+            const counts = new Map();
+            tableContainer.querySelectorAll('td').forEach(function (cell) {
+                const color = cell.dataset.color.toLowerCase();
+                counts.set(color, (counts.get(color) || 0) + 1);
+            });
+
+            const list = document.getElementById('used-colors-list');
+            list.replaceChildren();
+            counts.forEach(function (count, color) {
+                const item = document.createElement('li');
+                const swatch = document.createElement('span');
+                swatch.className = 'color-swatch';
+                swatch.style.backgroundColor = color;
+                swatch.setAttribute('aria-hidden', 'true');
+                const label = document.createElement('span');
+                label.textContent = color + ' — ' + count + ' ұяшық';
+                item.append(swatch, label);
+                list.appendChild(item);
+            });
+        }
     </script>
 
 </body>
