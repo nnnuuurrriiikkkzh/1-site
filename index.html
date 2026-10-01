@@ -392,6 +392,40 @@
             top: auto;
             bottom: 100%;
         }
+        /* 3–4 тапсырмалар */
+        .table-scroll { overflow-x: auto; margin-top: 16px; }
+        .color-table { border-collapse: collapse; }
+        .color-table caption { text-align: left; padding-bottom: 8px; }
+        .color-table td { padding: 0; border: 1px solid #64748b; background: #ffffff; }
+        .cell-button { display: block; width: 44px; height: 44px; border: 0; background: transparent; cursor: pointer; }
+        .cell-button:focus-visible { outline: 3px solid #7e22ce; outline-offset: -4px; }
+        .theme-toolbar { display: flex; justify-content: flex-end; margin-bottom: 16px; }
+        body.dark-theme { background: #0f172a; color: #e2e8f0; color-scheme: dark; }
+        body.dark-theme .home-card,
+        body.dark-theme .home-person-card,
+        body.dark-theme .person-profile,
+        body.dark-theme .info-card { background: #1e293b; border-color: #475569; }
+        body.dark-theme .person-name,
+        body.dark-theme .home-person-info h3,
+        body.dark-theme .info-value { color: #f1f5f9; }
+        body.dark-theme .home-person-info p,
+        body.dark-theme .profession-trigger,
+        body.dark-theme .info-heading { color: #cbd5e1; }
+        body.dark-theme .open-link,
+        body.dark-theme .tooltip-icon { color: #93c5fd; }
+        body.dark-theme nav,
+        body.dark-theme .task-tabs { border-color: #475569; }
+        body.dark-theme .tab-btn,
+        body.dark-theme .task-tab-btn,
+        body.dark-theme .paragraph-controls input,
+        body.dark-theme .class-demo { background: #334155; color: #f1f5f9; border-color: #64748b; }
+        body.dark-theme .tab-btn:hover,
+        body.dark-theme .task-tab-btn:hover { background: #475569; }
+        body.dark-theme .tab-btn.active,
+        body.dark-theme .task-tab-btn[aria-selected="true"] { background: #2563eb; color: #ffffff; border-color: #2563eb; }
+        body.dark-theme .class-demo.active { background: #1e3a8a; color: #dbeafe; }
+        body.dark-theme .new-div { background: #14532d; color: #dcfce7; }
+        /* Өзгертілетін абзацтың таңдалған түсі ашық фонда сақталады. */
     </style>
 </head>
 <body>
@@ -440,6 +474,9 @@
             <div class="task-tabs" role="tablist" aria-label="Задания по DOM">
                 <button id="task-tab-1" class="task-tab-btn" type="button" role="tab" aria-selected="true" aria-controls="task-panel-1">Задание 1</button>
                 <button id="task-tab-2" class="task-tab-btn" type="button" role="tab" aria-selected="false" aria-controls="task-panel-2" tabindex="-1">Задание 2</button>
+                <button id="task-tab-3" class="task-tab-btn" type="button" role="tab" aria-selected="false" aria-controls="task-panel-3" tabindex="-1" lang="kk">3-тапсырма</button>
+                <button id="task-tab-4" class="task-tab-btn" type="button" role="tab" aria-selected="false" aria-controls="task-panel-4" tabindex="-1" lang="kk">4-тапсырма</button>
+                
             </div>
 
             <section id="task-panel-1" class="task-panel" role="tabpanel" aria-labelledby="task-tab-1" tabindex="0">
@@ -465,6 +502,28 @@
                 <div id="class-target" class="class-demo" aria-live="polite">Класс active не добавлен</div>
                 <button id="toggle-class" class="demo-button" type="button" aria-controls="class-target" aria-pressed="false">Переключить active</button>
                 <p id="class-list" class="class-list" aria-live="polite"></p>
+            </section>
+            <section id="task-panel-3" class="task-panel" role="tabpanel" aria-labelledby="task-tab-3" tabindex="0" lang="kk" hidden>
+                <h2>3-тапсырма. Интерактивті кесте</h2>
+                <p>Жолдар мен бағандар санын енгізіңіз (1–50). Түсті таңдап, ұяшықты басыңыз. Қайта бассаңыз, ұяшық ақ түске оралады.</p>
+                <form id="table-settings" class="paragraph-controls">
+                    <label>Жол саны <input id="table-rows" type="number" min="1" max="50" step="1" value="4" required></label>
+                    <label>Баған саны <input id="table-columns" type="number" min="1" max="50" step="1" value="5" required></label>
+                    <button type="submit" class="demo-button">Кесте құру</button>
+                </form>
+                <p>Жаңа кесте құрғанда бұрынғы бояулар өшіріледі.</p>
+                <div class="paragraph-controls">
+                    <label>Ұяшық түсі <input id="cell-color" type="color" value="#2563eb"></label>
+                    <label>Саналатын түс <input id="count-color" type="color" value="#2563eb"></label>
+                    <button id="count-cells" type="button" class="demo-button">Ұяшықтарды санау</button>
+                </div>
+                <p id="cell-count" role="status" aria-live="polite"></p>
+                <div id="table-container" class="table-scroll"></div>
+            </section>
+            <section id="task-panel-4" class="task-panel" role="tabpanel" aria-labelledby="task-tab-4" tabindex="0" lang="kk" hidden>
+                <h2>4-тапсырма. Қараңғы тақырып</h2>
+                <p>Түймені басқанда бүкіл беттің түс режимі ауысады.</p>
+                <button type="button" class="demo-button theme-toggle" aria-pressed="false">Қараңғы тақырып</button>
             </section>
         </div>
     </div>
@@ -674,8 +733,7 @@
 
         // Скрипт расположен после HTML: все нужные элементы уже доступны.
         // Задание 1.1: находим элемент по ID и заменяем его текст.
-        const greeting = document.getElementById('greeting');
-        greeting.textContent = 'Сәлем, әлем!';
+     
 
         // Задание 1.2: создаём div и добавляем его в конец body.
         const newDiv = document.createElement('div');
@@ -692,7 +750,7 @@
 
         // Задание 1.4: создаём абзац и добавляем его в первое задание.
         const paragraph = document.createElement('p');
-        paragraph.textContent = 'Бұл ауыспалы абзац';
+        paragraph.textContent = 'Сәлем, әлем!';
         paragraph.id = 'changeable-paragraph';
         paragraph.classList.add('changeable-paragraph');
         paragraph.lang = 'kk';
@@ -794,6 +852,81 @@
                 }
             });
         });
+        // 3-тапсырма: берілген өлшеммен кесте құру.
+        const tableContainer = document.getElementById('table-container');
+        function createTable(rows, columns) {
+            if (!Number.isInteger(rows) || !Number.isInteger(columns) ||
+                rows < 1 || columns < 1 || rows > 50 || columns > 50) {
+                return false;
+            }
+            const table = document.createElement('table');
+            table.className = 'color-table';
+            const caption = table.createCaption();
+            caption.textContent = rows + ' × ' + columns + ' кестесі';
+            const tbody = table.createTBody();
+            for (let r = 0; r < rows; r++) {
+                const row = tbody.insertRow();
+                for (let c = 0; c < columns; c++) {
+                    const cell = row.insertCell();
+                    cell.dataset.color = '#ffffff';
+                    const button = document.createElement('button');
+                    button.type = 'button';
+                    button.className = 'cell-button';
+                    button.dataset.position = (r + 1) + '-жол, ' + (c + 1) + '-баған';
+                    button.setAttribute('aria-label', button.dataset.position + ', түсі #ffffff');
+                    cell.appendChild(button);
+                }
+            }
+            tableContainer.replaceChildren(table);
+            updateCellCount();
+            return true;
+        }
+
+        // Түстер hex форматында сақталады: rgb жолдарын салыстыру қажет емес.
+        function countCellsByColor(color) {
+            return Array.from(tableContainer.querySelectorAll('td')).filter(
+                cell => cell.dataset.color === color.toLowerCase()
+            ).length;
+        }
+        function updateCellCount() {
+            const color = document.getElementById('count-color').value;
+            document.getElementById('cell-count').textContent =
+                color + ' түстегі ұяшықтар саны: ' + countCellsByColor(color);
+        }
+        document.getElementById('table-settings').addEventListener('submit', function (event) {
+            event.preventDefault();
+            createTable(document.getElementById('table-rows').valueAsNumber,
+                        document.getElementById('table-columns').valueAsNumber);
+        });
+        tableContainer.addEventListener('click', function (event) {
+            const button = event.target.closest('.cell-button');
+            if (!button || !tableContainer.contains(button)) return;
+            const cell = button.parentElement;
+            const selectedColor = document.getElementById('cell-color').value.toLowerCase();
+            const color = cell.dataset.color === selectedColor ? '#ffffff' : selectedColor;
+            cell.dataset.color = color;
+            cell.style.backgroundColor = color;
+            button.setAttribute('aria-label', button.dataset.position + ', түсі ' + color);
+            updateCellCount();
+        });
+        document.getElementById('count-cells').addEventListener('click', updateCellCount);
+        document.getElementById('count-color').addEventListener('input', updateCellCount);
+        createTable(4, 5);
+
+        // 4-тапсырма: body класын ауыстыру арқылы тақырыпты өзгерту.
+        function setDarkTheme(enabled) {
+            document.body.classList.toggle('dark-theme', enabled);
+            document.querySelectorAll('.theme-toggle').forEach(function (button) {
+                button.setAttribute('aria-pressed', String(enabled));
+                button.textContent = enabled ? 'Ашық тақырыпқа ауысу' : 'Қараңғы тақырыпқа ауысу';
+            });
+        }
+        document.querySelectorAll('.theme-toggle').forEach(function (button) {
+            button.addEventListener('click', function () {
+                setDarkTheme(!document.body.classList.contains('dark-theme'));
+            });
+        });
+        setDarkTheme(false);
     </script>
 
 </body>
